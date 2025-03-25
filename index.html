@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h3 style="color: rgb(6, 159, 103);">Welcome to MarketHub</h3> <br>
+        <h2 id="form-title">Login</h2>
+        
+        <form id="auth-form">
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Password" required>
+
+            <!-- User Role Selection -->
+            <div class="role-selection">
+                <label>
+                    <input type="radio" name="role" value="customer" required> Customer
+                </label>
+                <label>
+                    <input type="radio" name="role" value="supplier" required> Supplier
+                </label>
+            </div>
+
+            <p id="error-message" class="error"></p>
+
+            <button type="submit" id="submit-btn">Login</button>
+            
+            <p class="toggle">
+                Don't have an account? <a href="#" id="toggle-signup">Sign up</a>
+            </p>
+            
+            <p class="forgot"><a href="#">Forgot Password?</a></p>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
