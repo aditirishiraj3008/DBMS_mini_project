@@ -4,8 +4,93 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Home</title>
-</head>
-<body>
-    <h1>Welcome, Customer!</h1>
-</body>
+    <link rel="stylesheet" href="/pages/customer.css">
+
+    <body>
+
+        <header>
+            <nav>
+                <a href="customer_home.html"><img src="/pages/images/logo.png" alt="MarketHub" style="border-radius: 50%; height: 50px;"></a>
+                <ul class="nav-links">
+                    <li><a href="../index.html" style="background-color: rgb(255, 140, 0); border-radius: 5px; padding: 5px 10px; box-shadow: 0 0 5px rgb(0, 133, 62);">Login</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                    <li><a href="cart.html">Cart</a></li>
+                    <li><a href="order_details.html">Orders</a></li>
+                </ul>
+            </nav>
+        </header>
+    
+        <section class="hero">
+            <div class="hero-overlay">
+                <h1>MarketHub</h1>
+                <p><b>Buy fresh & organic wholesale groceries</b></p>
+                <p>Directly from known suppliers at the best prices!!</p>
+                <div class="hero-buttons" style="margin-top: 10px;">
+                    <a class="shop-btn" href="#product">Shop Now</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="search_n_filter">
+            <input type="text" id="search-bar" placeholder="Search Product">
+            
+            <select id="sort-options">
+                <option value="default">Sort By</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="discount">Discount</option>
+            </select>
+        
+            <select id="category-filter">
+                <option value="all">All Categories</option>
+                <option value="vegetables">Vegetables</option>
+                <option value="fruits">Fruits</option>
+                <option value="dairy">Dairy</option>
+            </select>
+        </section>        
+    
+        <section class="products" id="product">
+            <h2>Our Products</h2>
+            <div class="product-container" style="margin-top: 70px;">
+                <div class="product-card">
+                    <img src="https://i.pinimg.com/474x/25/9f/fa/259ffaaf1d9fc36adf43bedde817ca26.jpg" alt="Tomato">
+                    <h3>Tomatoes</h3>
+                    <p class="category">Category: Vegetables</p>
+                    <p class="price"><span class="original-price">Rs.10.00</span> Rs.8.00</p>
+                    <p class="discount">20% Off</p>
+                    <button class="add-to-cart" data-name="Tomatoes" data-price="8.00">Add to Cart</button>
+                </div>
+        
+                <div class="product-card">
+                    <img src="https://i.pinimg.com/736x/81/d0/e3/81d0e355e2cfd56168b3f1f96fa45a85.jpg" alt="Potato">
+                    <h3>Potatoes</h3>
+                    <p class="category">Category: Vegetables</p>
+                    <p class="price"><span class="original-price">Rs.5.00</span> Rs.4.00</p>
+                    <p class="discount">20% Off</p>
+                    <button class="add-to-cart">Add to Cart</button>
+                </div>
+        
+                <div class="product-card">
+                    <img src="https://i.pinimg.com/474x/b9/9f/f4/b99ff4ad6edcd0ca3c373f0fc8bfc499.jpg" alt="Apple">
+                    <h3>Apples</h3>
+                    <p class="category">Category: Fruits</p>
+                    <p class="price"><span class="original-price">Rs.15.00</span> Rs.12.00</p>
+                    <p class="discount">20% Off</p>
+                    <button class="add-to-cart">Add to Cart</button>
+                </div>
+
+                <div class="product-card">
+                    <img src="https://i.pinimg.com/474x/41/ad/7b/41ad7b1947bd6f8adecb8ac5774b69de.jpg" alt="Pineapple">
+                    <h3>Pineapples</h3>
+                    <p class="category">Category: Fruits</p>
+                    <p class="price"><span class="original-price">Rs.15.00</span> Rs.12.00</p>
+                    <p class="discount">20% Off</p>
+                    <button class="add-to-cart">Add to Cart</button>
+                </div>
+            </div>
+        </section>        
+    
+        <script src="customer.js"></script>
+        <script src="cart.js"></script>
+    </body>
 </html>
