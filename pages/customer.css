@@ -334,3 +334,63 @@ nav {
 #checkout-btn:hover {
     background: #d35400;
 }
+
+/*ORDERS*/
+.orders-container {
+    padding: 20px;
+    margin-top: 70px;
+    background-color: white;
+}
+
+.orders-container h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Order Card Styles */
+.order-card {
+    border: 1px solid #ddd;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.order-card h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.order-items {
+    margin-bottom: 10px;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.order-item p {
+    margin: 0;
+}
+
+.order-total {
+    font-weight: bolder;
+    margin-top: 10px;
+    color: #00a34f;
+    text-align: end;
+}
+
+.status-shipped {
+    color: green;
+}
+
+.status-pending {
+    color: orange;
+}
+
+.status-cancelled {
+    color: red;
+}
