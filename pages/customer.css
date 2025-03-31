@@ -297,12 +297,13 @@ nav {
 
 /* Remove Button */
 .remove-btn {
+    margin-left: 10px;
     background: red;
     color: white;
     border: none;
     padding: 5px 10px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px;
     border-radius: 5px;
 }
 
