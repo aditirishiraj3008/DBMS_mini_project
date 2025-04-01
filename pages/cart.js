@@ -6,10 +6,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function updateCart() {
         if (!cartItemsContainer) return; // Prevent error if not on cart page
-
+    
         cartItemsContainer.innerHTML = "";
         let total = 0;
-
+    
+        if (cart.length === 0) {
+            cartItemsContainer.innerHTML = `<p class="empty-cart-message">Your cart is empty.</p>`;
+            totalPrice.textContent = "0.00";
+            return;
+        }
+    
         cart.forEach((product, index) => {
             const item = document.createElement("div");
             item.classList.add("cart-item");
@@ -28,10 +34,10 @@ document.addEventListener("DOMContentLoaded", function () {
             cartItemsContainer.appendChild(item);
             total += product.price * product.quantity;
         });
-
+    
         totalPrice.textContent = total.toFixed(2);
         localStorage.setItem("cart", JSON.stringify(cart)); // Always save cart
-    }
+    }    
 
     // Add to cart functionality
     addToCartButtons.forEach((button) => {
@@ -63,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (cart[index].quantity === 0) {
                 cart.splice(index, 1);
             }
-        } else if (event.target.classList.contains("remove")) {
+        } else if (event.target.classList.contains("remove-btn")) {
             let index = event.target.getAttribute("data-index");
             cart.splice(index, 1);
         }

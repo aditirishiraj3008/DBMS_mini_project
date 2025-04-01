@@ -311,6 +311,11 @@ nav {
     background: darkred;
 }
 
+.empty-cart-message{
+    color: red;
+    text-align: center;
+}
+
 /* Cart Summary */
 .cart-summary {
     text-align: center;

@@ -1,4 +1,4 @@
-function addToCart(name, price, image) {
+function addToCart(name, price) {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     let product = cart.find(item => item.name === name);
 
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const productPrice = parseFloat(product.getAttribute("data-price"));
 
         button.addEventListener("click", () => {
-            addToCart(productName, productPrice, productImage);
+            addToCart(productName, productPrice);
 
             // Replace button with quantity controls
             const cartControls = document.createElement("div");
