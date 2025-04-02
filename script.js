@@ -60,7 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             const storedUser = JSON.parse(localStorage.getItem(email.value));
             if (storedUser && storedUser.password === password.value) {
-                alert("Login successful!");
 
                 // Redirect based on role
                 if (storedUser.role === "customer") {

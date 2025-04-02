@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supplier Home</title>
+    <title>Profile</title>
     <link rel="stylesheet" href="supplier.css">
 </head>
 <body>
@@ -19,19 +19,18 @@
             </ul>
         </nav>
     </header>
-    
     <main>
-        <h2 style="margin-top: 100px; text-align: center;">Supplier Dashboard</h2>
-        <div class="dashboard">
-            <div class="card">
-                <h3>Total Orders</h3>
-                <p id="total-orders">0</p>
-            </div>
-            <div class="card">
-                <h3>Pending Orders</h3>
-                <p id="pending-orders">0</p>
+        <div class="profile-container">
+            <h2>Your Profile</h2>
+            <div class="profile-info">
+                <p><strong>Role:</strong> <span id="user-role">Supplier</span></p>
+                <p><strong>User ID:</strong> <span id="user-id"></span></p>
+                <p><strong>Name:</strong> <span id="user-name"></span></p>
+                <p><strong>Address:</strong> <span id="user-address"></span></p>
+                <p><strong>Contact:</strong> <span id="user-contact"></span></p>
             </div>
         </div>
     </main>
+    <script src="s_profile.js"></script>
 </body>
 </html>
