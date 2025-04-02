@@ -399,3 +399,30 @@ nav {
 .status-cancelled {
     color: red;
 }
+
+/*POROFILE*/
+.profile-container {
+    max-width: 600px;
+    margin: 100px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Profile Info */
+.profile-info {
+    text-align: left;
+    padding: 10px;
+}
+
+.profile-info p {
+    font-size: 18px;
+    color: #333;
+    margin: 10px 0;
+}
+
+.profile-info strong {
+    color: #ff8c00;
+}
