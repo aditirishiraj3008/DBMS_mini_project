@@ -5,6 +5,8 @@ from routes.auth_routes import auth_blueprint
 # Initialize Flask App
 app = Flask(__name__)
 
+app.secret_key = "Shanu@04082005"
+
 # Enable CORS
 CORS(app)
 
