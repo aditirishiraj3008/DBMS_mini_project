@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .profile-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 350px;
+        }
+        h2 {
+            margin-bottom: 10px;
+        }
+        .profile-info {
+            text-align: left;
+            margin-top: 10px;
+        }
+        .profile-info p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="profile-container">
+        <h2>Profile</h2>
+        <div class="profile-info">
+            <p><strong>Role:</strong> <span id="role"></span></p>
+            <p><strong>User ID:</strong> <span id="userID"></span></p>
+            <p><strong>Name:</strong> <span id="name"></span></p>
+            <p><strong>Email:</strong> <span id="email"></span></p>
+            <p><strong>Phone:</strong> <span id="phone"></span></p>
+            <p><strong>Address:</strong> <span id="address"></span></p>
+        </div>
+    </div>
+
+    <script>
+        async function fetchProfile() {
+            try {
+                let response = await fetch('http://127.0.0.1:5000/auth/profile');
+                let data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('role').textContent = data.role;
+                    document.getElementById('userID').textContent = data.userID;
+                    document.getElementById('name').textContent = data.name;
+                    document.getElementById('email').textContent = data.email;
+                    document.getElementById('phone').textContent = data.phoneNo;
+                    document.getElementById('address').textContent = 
+                        `${data.houseNo}, ${data.streetName}, ${data.city}, ${data.state} - ${data.pin}`;
+                } else {
+                    document.body.innerHTML = `<h2>Error: ${data.error}</h2>`;
+                }
+            } catch (error) {
+                document.body.innerHTML = `<h2>Failed to load profile</h2>`;
+            }
+        }
+
+        fetchProfile();
+    </script>
+
+</body>
+</html>

@@ -66,6 +66,8 @@
             let password = document.getElementById('password').value;
             let errorMsg = document.getElementById('error-msg');
 
+            errorMsg.textContent = ""; // Clear previous errors
+
             try {
                 let response = await fetch('http://127.0.0.1:5000/auth/login', {
                     method: 'POST',
@@ -78,12 +80,12 @@
                 if (response.ok) {
                     alert("Login Successful!");
 
-                    // Redirect based on role
-                    if (data.role === "Supplier") {
-                        window.location.href = "supplier_dashboard.html";
-                    } else if (data.role === "Customer") {
-                        window.location.href = "customer_dashboard.html";
-                    }
+                    // Store userID in localStorage
+                    localStorage.setItem("userID", data.userID);
+                    localStorage.setItem("role", data.role);
+
+                    // Redirect to profile page
+                    window.location.href = "profile.html";
                 } else {
                     errorMsg.textContent = data.error;
                 }

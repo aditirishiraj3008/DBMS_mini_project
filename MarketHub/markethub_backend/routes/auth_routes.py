@@ -1,5 +1,7 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 import mysql.connector
+from flask import session
+
 
 auth_blueprint = Blueprint('auth', __name__)
 
@@ -71,8 +73,7 @@ def signup():
         conn.close()
 
 
-
-# ----------------------- LOGIN ROUTE -----------------------
+# ----------------------- LOGIN ROUTE (MODIFIED) -----------------------
 @auth_blueprint.route('/login', methods=['POST'])
 def login():
     print("\n🔹 [Login] Route Accessed")
@@ -97,8 +98,7 @@ def login():
             user_id = supplier[0]
             role = "Supplier"
         else:
-            # Ensure the previous result is read before a new query
-            cursor.fetchall()  
+            cursor.fetchall()  # Ensure previous result is read
 
             # Check if the email exists in Customer
             cursor.execute("SELECT userID FROM Customer WHERE email = %s", (email,))
@@ -108,12 +108,11 @@ def login():
                 user_id = customer[0]
                 role = "Customer"
             else:
-                cursor.fetchall()  # Ensure all results are read
+                cursor.fetchall()
                 print("❌ [Login] Email not found!")
                 return jsonify({"error": "Invalid email or password"}), 401
 
-        # Ensure the previous result is read before a new query
-        cursor.fetchall()  
+        cursor.fetchall()  # Ensure previous result is read
 
         # Verify password from User table
         cursor.execute("SELECT password FROM User WHERE userID = %s", (user_id,))
@@ -121,7 +120,12 @@ def login():
 
         if user and user[0] == password:
             print(f"✅ [Login] {role} Login Successful!")
-            return jsonify({"message": "Login successful", "role": role}), 200
+            
+            # Write userID to a file
+            with open("logged_in_user.txt", "w") as f:
+                f.write(user_id)
+            
+            return jsonify({"message": "Login successful", "redirect": "/profile"}), 200
         else:
             print("❌ [Login] Incorrect Password!")
             return jsonify({"error": "Invalid email or password"}), 401
@@ -130,9 +134,60 @@ def login():
         cursor.close()
         conn.close()
 
+# ----------------------- PROFILE ROUTE (UPDATED) -----------------------
+@auth_blueprint.route('/profile', methods=['GET'])
+def profile():
+    try:
+        # Read userID from file
+        with open("logged_in_user.txt", "r") as file:
+            user_id = file.read().strip()
+        
+        if not user_id:
+            return jsonify({"error": "User not logged in"}), 401
+        
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
 
+        # Determine role based on userID prefix
+        role = "Supplier" if user_id.startswith("S") else "Customer"
+        table = "Supplier" if role == "Supplier" else "Customer"
+        name_column = "sName" if role == "Supplier" else "cName"
 
-# ----------------------- TEST ROUTE -----------------------
-@auth_blueprint.route('/test', methods=['POST'])
-def test():
-    return jsonify({"message": "Test successful!"}), 200
+        # Fetch user details
+        cursor.execute(f"SELECT {name_column} AS name, email, phoneNo FROM {table} WHERE userID = %s", (user_id,))
+        user_data = cursor.fetchone()
+
+        if not user_data:
+            return jsonify({"error": "User not found"}), 404
+
+        # Check if userID exists in Address table
+        cursor.execute("SELECT * FROM Address WHERE userID = %s", (user_id,))
+        address_record = cursor.fetchone()
+
+        # Construct address string
+        if address_record:
+            address_data = f"{address_record.get('houseNo', '')}, {address_record.get('streetName', '')}, {address_record.get('city', '')}, {address_record.get('state', '')} - {address_record.get('pin', '')}"
+            address_data = address_data.strip(", -")  # Remove trailing commas or dashes
+        else:
+            address_data = "-"
+
+        # **Final check**: If address_data contains 'undefined', replace it with '-'
+        if "undefined" in address_data or address_data.strip() == "":
+            address_data = "-"
+
+        cursor.close()
+        conn.close()
+
+        return jsonify({
+            "role": role,
+            "userID": user_id,
+            "name": user_data["name"],
+            "email": user_data["email"],
+            "phoneNo": user_data["phoneNo"],
+            "address": address_data
+        })
+
+    except FileNotFoundError:
+        return jsonify({"error": "User not logged in"}), 401
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
