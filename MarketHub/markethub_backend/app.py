@@ -15,6 +15,5 @@ app.register_blueprint(auth_blueprint, url_prefix='/auth')
 @app.route('/')
 def home():
     return {"message": "Server is running!"}, 200
-
 if __name__ == '__main__':
     app.run(debug=True)

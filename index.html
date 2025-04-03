@@ -5,40 +5,134 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MarketHub</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .container {
+            display: none; /* Initially hide the signup form */
+        }
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: blue;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h3 style="color: rgb(255, 140, 0);">Welcome to MarketHub</h3> <br>
-        <h2 id="form-title">Login</h2>
-        
-        <form id="auth-form">
-            <input type="text" id="name" placeholder="Full Name" required style="display: none;">
-            <input type="tel" id="phone" placeholder="Phone Number" required style="display: none;">
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="password" placeholder="Password" required>
-
-            <!-- User Role Selection -->
-            <div class="role-selection">
-                <label>
-                    <input type="radio" name="role" value="customer" required> Customer
-                </label>
-                <label>
-                    <input type="radio" name="role" value="supplier" required> Supplier
-                </label>
-            </div>
-
-            <p id="error-message" class="error"></p>
-
-            <button type="submit" id="submit-btn">Login</button>
-            
-            <p class="toggle">
-                Don't have an account? <a href="#" id="toggle-signup">Sign up</a>
-            </p>
-            
-            <p class="forgot"><a href="#">Forgot Password?</a></p>
+    <!-- Login Form -->
+    <div class="login-container" id="loginFormContainer">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <input type="email" id="login-email" placeholder="Enter your email" required>
+            <input type="password" id="login-password" placeholder="Enter your password" required>
+            <button type="submit">Login</button>
         </form>
+        <p id="error-msg"></p>
+        <button class="toggle-btn" onclick="toggleForms()">Don't have an account? Sign Up</button>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Signup Form -->
+    <div class="container" id="signupFormContainer">
+        <h2>Signup</h2>
+        <input type="text" id="name" placeholder="Full Name">
+        <input type="email" id="signup-email" placeholder="Email">
+        <input type="text" id="phone" placeholder="Phone Number">
+        <input type="password" id="signup-password" placeholder="Password">
+        <select id="role">
+            <option value="">Select Role</option>
+            <option value="Supplier">Supplier</option>
+            <option value="Customer">Customer</option>
+        </select>
+        <button onclick="signup()">Sign Up</button>
+        <div id="message" class="message"></div>
+        <button class="toggle-btn" onclick="toggleForms()">Already have an account? Login</button>
+    </div>
+
+    <script>
+        function toggleForms() {
+            let loginContainer = document.getElementById("loginFormContainer");
+            let signupContainer = document.getElementById("signupFormContainer");
+
+            if (loginContainer.style.display === "none") {
+                loginContainer.style.display = "block";
+                signupContainer.style.display = "none";
+            } else {
+                loginContainer.style.display = "none";
+                signupContainer.style.display = "block";
+            }
+        }
+
+        // Login Function
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            let email = document.getElementById('login-email').value;
+            let password = document.getElementById('login-password').value;
+            let errorMsg = document.getElementById('error-msg');
+
+            try {
+                let response = await fetch('http://127.0.0.1:5000/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                let data = await response.json();
+
+                if (response.ok) {
+                    alert("Login Successful!");
+                    window.location.href = data.role === "Supplier" ? "/pages/supplier_home.html" : "/pages/customer_home.html";
+                } else {
+                    errorMsg.textContent = data.error;
+                }
+            } catch (error) {
+                errorMsg.textContent = "Error connecting to server!";
+            }
+        });
+
+        // Signup Function
+        async function signup() {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const password = document.getElementById('signup-password').value.trim();
+            const role = document.getElementById('role').value;
+            const messageDiv = document.getElementById('message');
+
+            if (!name || !email || !phone || !password || !role) {
+                showMessage('All fields are required!', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/auth/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, phone, password, role })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showMessage('Signup successful!', 'success');
+                    setTimeout(() => toggleForms(), 1000); // Switch to login after signup
+                } else {
+                    showMessage(data.error || 'Signup failed!', 'error');
+                }
+            } catch (error) {
+                showMessage('Error connecting to server!', 'error');
+                console.error('❌ [Frontend] Signup error:', error);
+            }
+        }
+
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+        }
+    </script>
 </body>
 </html>
+
