@@ -1,110 +1,82 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("auth-form");
-    const nameField = document.getElementById("name");
-    const phoneField = document.getElementById("phone");
-    const emailField = document.getElementById("email");
-    const passwordField = document.getElementById("password");
-    const errorMessage = document.getElementById("error-message");
-    const formTitle = document.getElementById("form-title");
-    const submitBtn = document.getElementById("submit-btn");
-    const toggleLink = document.getElementById("toggle-signup");
-    const roleInputs = document.getElementsByName("role");
+function toggleForms() {
+    let loginContainer = document.getElementById("loginFormContainer");
+    let signupContainer = document.getElementById("signupFormContainer");
 
-    let isSignup = false;
-
-    // Toggle between login and signup
-    toggleLink.addEventListener("click", (e) => {
-        e.preventDefault();
-        isSignup = !isSignup;
-        formTitle.textContent = isSignup ? "Sign Up" : "Login";
-        submitBtn.textContent = isSignup ? "Sign Up" : "Login";
-        toggleLink.textContent = isSignup
-            ? "Already have an account? Login"
-            : "Don't have an account? Sign up";
-
-        // Show/hide name and phone fields
-        nameField.style.display = isSignup ? "block" : "none";
-        phoneField.style.display = isSignup ? "block" : "none";
-    });
-
-    // Form submission
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        errorMessage.textContent = "";
-
-        // Signup validations
-        if (isSignup) {
-            if (nameField.value.trim() === "") {
-                errorMessage.textContent = "Please enter your full name.";
-                return;
-            }
-            if (!validatePhone(phoneField.value)) {
-                errorMessage.textContent = "Enter a valid 10-digit phone number.";
-                return;
-            }
-        }
-
-        if (!validateEmail(emailField.value)) {
-            errorMessage.textContent = "Invalid email format";
-            return;
-        }
-        if (passwordField.value.length < 6) {
-            errorMessage.textContent = "Password must be at least 6 characters";
-            return;
-        }
-
-        // Check selected role
-        let selectedRole = null;
-        for (let role of roleInputs) {
-            if (role.checked) {
-                selectedRole = role.value;
-                break;
-            }
-        }
-
-        if (!selectedRole) {
-            errorMessage.textContent = "Please select whether you are a Customer or Supplier.";
-            return;
-        }
-
-        // Simulate authentication (in a real app, send this data to the backend)
-        if (isSignup) {
-            const userData = {
-                name: nameField.value,
-                phone: phoneField.value,
-                email: emailField.value,
-                password: passwordField.value,
-                role: selectedRole
-            };
-            localStorage.setItem(emailField.value, JSON.stringify(userData));
-            alert("Signup successful! You can now log in.");
-            isSignup = false;
-            formTitle.textContent = "Login";
-            submitBtn.textContent = "Login";
-            toggleLink.textContent = "Don't have an account? Sign up";
-            nameField.style.display = "none";
-            phoneField.style.display = "none";
-        } else {
-            const storedUser = JSON.parse(localStorage.getItem(emailField.value));
-            if (storedUser && storedUser.password === passwordField.value) {
-
-                // Redirect based on role
-                if (storedUser.role === "customer") {
-                    window.location.href = "pages/customer_home.html";
-                } else if (storedUser.role === "supplier") {
-                    window.location.href = "pages/supplier_home.html";
-                }
-            } else {
-                errorMessage.textContent = "Invalid email or password";
-            }
-        }
-    });
-
-    function validateEmail(email) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (loginContainer.style.display === "none") {
+        loginContainer.style.display = "block";
+        signupContainer.style.display = "none";
+    } else {
+        loginContainer.style.display = "none";
+        signupContainer.style.display = "block";
     }
+}
 
-    function validatePhone(phone) {
-        return /^[6-9]\d{9}$/.test(phone);
+// Login Function
+document.getElementById('loginForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    let email = document.getElementById('login-email').value;
+    let password = document.getElementById('login-password').value;
+    let errorMsg = document.getElementById('error-msg');
+
+    try {
+        let response = await fetch('http://127.0.0.1:5000/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+
+        let data = await response.json();
+
+        if (response.ok) {
+            alert("Login Successful!");
+            window.location.href = data.role === "Supplier" ? "/pages/supplier_home.html" : "/pages/customer_home.html";
+        } else {
+            errorMsg.textContent = data.error;
+        }
+    } catch (error) {
+        errorMsg.textContent = "Error connecting to server!";
     }
 });
+
+// Signup Function
+async function signup() {
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('signup-email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const password = document.getElementById('signup-password').value.trim();
+    const role = document.getElementById('role').value;
+    const messageDiv = document.getElementById('message');
+
+    if (!name || !email || !phone || !password || !role) {
+        showMessage('All fields are required!', 'error');
+        return;
+    }
+
+    try {
+        const response = await fetch('http://127.0.0.1:5000/auth/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, phone, password, role })
+        });
+
+        const data = await response.json();
+        
+        if (response.ok) {
+            showMessage('Signup successful!', 'success');
+            setTimeout(() => toggleForms(), 1000); // Switch to login after signup
+        } else {
+            showMessage(data.error || 'Signup failed!', 'error');
+        }
+    } catch (error) {
+        showMessage('Error connecting to server!', 'error');
+        console.error('❌ [Frontend] Signup error:', error);
+    }
+}
+
+function showMessage(text, type) {
+    const messageDiv = document.getElementById('message');
+    messageDiv.textContent = text;
+    messageDiv.className = `message ${type}`;
+    messageDiv.style.display = 'block';
+}

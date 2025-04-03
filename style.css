@@ -1,21 +1,15 @@
-/* Global Styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
-
+/* General Styles */
 body {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     background: linear-gradient(135deg, #76eaba, #00a34f);
+    font-family: Arial, sans-serif;
 }
 
-/* Container */
-.container {
+/* Container (Common for Login & Signup) */
+.login-container, .container {
     background: white;
     padding: 30px;
     width: 350px;
@@ -23,6 +17,11 @@ body {
     border-radius: 10px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease-in-out;
+}
+
+/* Hide Signup by Default */
+.container {
+    display: none;
 }
 
 /* Title */
@@ -33,8 +32,8 @@ h2 {
 }
 
 /* Input Fields */
-input {
-    width: 100%;
+input, select {
+    width: 300px;
     padding: 12px;
     margin: 10px 0;
     border: 2px solid #ddd;
@@ -43,38 +42,15 @@ input {
     transition: all 0.3s ease-in-out;
 }
 
-input:focus {
+input:focus, select:focus {
     border-color: #31ae7a;
     outline: none;
     box-shadow: 0 0 5px rgba(57, 57, 57, 0.5);
 }
 
-/* Role Selection */
-.role-selection {
-    text-align: left;
-    margin: 10px 0;
-    font-size: 14px;
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-}
-
-.role-selection label {
-    cursor: pointer;
-    font-size: 16px;
-    color: #333;
-    display: flex;
-    align-items: center;
-}
-
-.role-selection input[type="radio"] {
-    margin-right: 5px;
-    transform: scale(1);
-}
-
 /* Buttons */
 button {
-    width: 100%;
+    width: 300px;
     padding: 12px;
     background: #2cce7a;
     color: white;
@@ -88,6 +64,22 @@ button {
 
 button:hover {
     background: #00a34f;
+}
+
+/* Toggle Button */
+.toggle-btn {
+    background-color: white;
+    background: none;
+    border: none;
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.toggle-btn:hover{
+    background-color: white;
 }
 
 /* Links */
@@ -114,3 +106,9 @@ a:hover {
     margin-top: 5px;
 }
 
+/* Success Message */
+.success {
+    color: green;
+    font-size: 13px;
+    margin-top: 5px;
+}
