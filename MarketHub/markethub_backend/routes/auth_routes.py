@@ -1,7 +1,5 @@
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify
 import mysql.connector
-from flask import session
-
 
 auth_blueprint = Blueprint('auth', __name__)
 
@@ -72,8 +70,7 @@ def signup():
         cursor.close()
         conn.close()
 
-
-# ----------------------- LOGIN ROUTE (MODIFIED) -----------------------
+# ----------------------- LOGIN ROUTE -----------------------
 @auth_blueprint.route('/login', methods=['POST'])
 def login():
     print("\n🔹 [Login] Route Accessed")
@@ -121,7 +118,7 @@ def login():
         if user and user[0] == password:
             print(f"✅ [Login] {role} Login Successful!")
             
-            # Write userID to a file
+            # Write userID to a file (overwrite old data)
             with open("logged_in_user.txt", "w") as f:
                 f.write(user_id)
             
@@ -134,7 +131,8 @@ def login():
         cursor.close()
         conn.close()
 
-# ----------------------- PROFILE ROUTE (UPDATED) -----------------------
+
+# ----------------------- PROFILE ROUTE -----------------------
 @auth_blueprint.route('/profile', methods=['GET'])
 def profile():
     try:
@@ -171,10 +169,6 @@ def profile():
         else:
             address_data = "-"
 
-        # **Final check**: If address_data contains 'undefined', replace it with '-'
-        if "undefined" in address_data or address_data.strip() == "":
-            address_data = "-"
-
         cursor.close()
         conn.close()
 
@@ -191,3 +185,4 @@ def profile():
         return jsonify({"error": "User not logged in"}), 401
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+

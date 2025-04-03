@@ -1,77 +1,38 @@
-function addToCart(name, price) {
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    let product = cart.find(item => item.name === name);
+document.addEventListener("DOMContentLoaded", async () => {
+    try {
+        // Fetch products from the backend
+        const response = await fetch("http://127.0.0.1:5000/products");
+        
+        if (!response.ok) {
+            throw new Error("Failed to fetch products!");
+        }
 
-    if (!product) {
-        cart.push({ name, price, quantity: 1 }); 
-    } else {
-        product.quantity++;
-    }
+        const products = await response.json();
 
-    localStorage.setItem("cart", JSON.stringify(cart));
-}
+        // Select the container where products will be displayed
+        const productContainer = document.querySelector(".product-container");
 
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("Website Loaded");
+        // Clear existing content
+        productContainer.innerHTML = "";
 
-    const products = document.querySelectorAll(".product-card");
+        // Dynamically create product cards
+        products.forEach(product => {
+            const productCard = document.createElement("div");
+            productCard.classList.add("product-card");
 
-    products.forEach(product => {
-        const button = product.querySelector(".add-to-cart");
-        const productName = product.getAttribute("data-name");
-        const productPrice = parseFloat(product.getAttribute("data-price"));
+            productCard.innerHTML = `
+                <img src="https://via.placeholder.com/150" alt="${product.pName}">
+                <h3>${product.pName}</h3>
+                <p class="description">${product.description}</p>
+                <p class="category">Category: ${product.categoryName}</p>
+                <p class="price"><span class="original-price">Rs.${(product.price * 1.2).toFixed(2)}</span> Rs.${product.price.toFixed(2)} <span class="units"> per ${product.unit}</span></p>
+                <button class="add-to-cart" data-name="${product.pName}" data-price="${product.price.toFixed(2)}">Add to Cart</button>
+            `;
 
-        button.addEventListener("click", () => {
-            addToCart(productName, productPrice);
-
-            // Replace button with quantity controls
-            const cartControls = document.createElement("div");
-            cartControls.classList.add("cart-controls");
-
-            const minusBtn = document.createElement("button");
-            minusBtn.textContent = "−";
-            minusBtn.classList.add("cart-minus");
-
-            const quantity = document.createElement("span");
-            quantity.textContent = "1"; // Initial quantity
-            quantity.classList.add("cart-quantity");
-
-            const plusBtn = document.createElement("button");
-            plusBtn.textContent = "+";
-            plusBtn.classList.add("cart-plus");
-
-            cartControls.appendChild(minusBtn);
-            cartControls.appendChild(quantity);
-            cartControls.appendChild(plusBtn);
-
-            product.replaceChild(cartControls, button);
-
-            // Handle + and - buttons
-            let count = 1;
-
-            plusBtn.addEventListener("click", () => {
-                count++;
-                quantity.textContent = count;
-                addToCart(productName, productPrice);
-            });
-
-            minusBtn.addEventListener("click", () => {
-                count--;
-                if (count === 0) {
-                    product.replaceChild(button, cartControls); // Restore "Add to Cart" button
-                } else {
-                    quantity.textContent = count;
-                    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-                    let product = cart.find(item => item.name === productName);
-                    if (product) {
-                        product.quantity--;
-                        if (product.quantity === 0) {
-                            cart = cart.filter(item => item.name !== productName); // Remove item from cart
-                        }
-                        localStorage.setItem("cart", JSON.stringify(cart));
-                    }
-                }
-            });
+            productContainer.appendChild(productCard);
         });
-    });
+
+    } catch (error) {
+        console.error("Error loading products:", error);
+    }
 });

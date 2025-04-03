@@ -29,8 +29,8 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         let data = await response.json();
 
         if (response.ok) {
-            alert("Login Successful!");
-            window.location.href = data.role === "Supplier" ? "/pages/supplier_home.html" : "/pages/customer_home.html";
+            alert(data.message);
+            window.location.href = "/pages/customer_home.html";
         } else {
             errorMsg.textContent = data.error;
         }
@@ -46,10 +46,9 @@ async function signup() {
     const phone = document.getElementById('phone').value.trim();
     const password = document.getElementById('signup-password').value.trim();
     const role = document.getElementById('role').value;
-    const messageDiv = document.getElementById('message');
 
     if (!name || !email || !phone || !password || !role) {
-        showMessage('All fields are required!', 'error');
+        alert("All fields are required!");
         return;
     }
 
@@ -61,22 +60,15 @@ async function signup() {
         });
 
         const data = await response.json();
-        
+
         if (response.ok) {
-            showMessage('Signup successful!', 'success');
-            setTimeout(() => toggleForms(), 1000); // Switch to login after signup
+            alert(data.message);
+            toggleForms(); // Switch to login form
         } else {
-            showMessage(data.error || 'Signup failed!', 'error');
+            alert(data.error);
         }
     } catch (error) {
-        showMessage('Error connecting to server!', 'error');
-        console.error('❌ [Frontend] Signup error:', error);
+        console.error(error);
+        alert("Error connecting to server!");
     }
-}
-
-function showMessage(text, type) {
-    const messageDiv = document.getElementById('message');
-    messageDiv.textContent = text;
-    messageDiv.className = `message ${type}`;
-    messageDiv.style.display = 'block';
 }
