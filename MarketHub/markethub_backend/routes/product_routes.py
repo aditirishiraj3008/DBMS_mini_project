@@ -1,31 +1,41 @@
 from flask import Blueprint, jsonify
 import mysql.connector
 
-product_blueprint = Blueprint('product', __name__)
+# Blueprint for product-related routes
+product_blueprint = Blueprint("product", __name__)
 
-# Database connection
+# Database connection function
 def get_db_connection():
     return mysql.connector.connect(
         host="localhost",
-        user="Aditi",
-        password="Aditi@0830",
+        user="Shanu48",
+        password="Shanu@123",
         database="MarketHub"
     )
 
-@product_blueprint.route('/products', methods=['GET'])
+# Route to fetch all products
+@product_blueprint.route("/products", methods=["GET"])
 def get_products():
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
 
-        # Fetch all products from the database
-        cursor.execute("SELECT pName, description, price, unit, categoryName FROM Product")
-        products = cursor.fetchall()
+    query = """
+    SELECT p.productID, p.pName, p.description, p.price, p.unit, c.categoryName
+    FROM Product p
+    JOIN Category c ON p.categoryName = c.categoryName;
+"""
 
-        cursor.close()
-        conn.close()
 
-        return jsonify(products), 200
+    cursor.execute(query)
+    products = cursor.fetchall()
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    # Print products to command prompt for debugging
+    print("\n--- Retrieved Products from Database ---")
+    for product in products:
+        print(product)
+    print("----------------------------------------\n")
+
+    cursor.close()
+    conn.close()
+
+    return jsonify(products)
